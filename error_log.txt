@@ -1,0 +1,68 @@
+
+============================================================
+时间: 2026-05-15 13:52:59
+阶段: Playwright-启动浏览器
+错误类型: Error
+错误信息: BrowserType.launch: Executable doesn't exist at C:\Users\htto5\AppData\Local\Temp\_MEI2049962\playwright\driver\package\.local-browsers\chromium_headless_shell-1217\chrome-headless-shell-win64\chrome-headless-shell.exe
+╔════════════════════════════════════════════════════════════╗
+║ Looks like Playwright was just installed or updated.       ║
+║ Please run the following command to download new browsers: ║
+║                                                            ║
+║     playwright install                                     ║
+║                                                            ║
+║ <3 Playwright Team                                         ║
+╚════════════════════════════════════════════════════════════╝
+附加信息: 请运行: python -m playwright install chromium
+Python版本: 3.14.4 (tags/v3.14.4:23116f9, Apr  7 2026, 14:10:54) [MSC v.1944 64 bit (AMD64)]
+平台: win32
+详细追踪:
+Traceback (most recent call last):
+  File "源码_v4.py", line 323, in phase_playwright
+  File "playwright\sync_api\_generated.py", line 15118, in launch
+    self._sync(
+    ~~~~~~~~~~^
+        self._impl_obj.launch(
+        ^^^^^^^^^^^^^^^^^^^^^^
+    ...<17 lines>...
+        )
+        ^
+    )
+    ^
+  File "playwright\_impl\_sync_base.py", line 115, in _sync
+    return task.result()
+           ~~~~~~~~~~~^^
+  File "playwright\_impl\_browser_type.py", line 98, in launch
+    await self._channel.send(
+        "launch", TimeoutSettings.launch_timeout, params
+    )
+  File "playwright\_impl\_connection.py", line 69, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "playwright\_impl\_connection.py", line 559, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.Error: BrowserType.launch: Executable doesn't exist at C:\Users\htto5\AppData\Local\Temp\_MEI2049962\playwright\driver\package\.local-browsers\chromium_headless_shell-1217\chrome-headless-shell-win64\chrome-headless-shell.exe
+╔════════════════════════════════════════════════════════════╗
+║ Looks like Playwright was just installed or updated.       ║
+║ Please run the following command to download new browsers: ║
+║                                                            ║
+║     playwright install                                     ║
+║                                                            ║
+║ <3 Playwright Team                                         ║
+╚════════════════════════════════════════════════════════════╝
+
+
+============================================================
+时间: 2026-05-15 13:53:03
+阶段: yt-dlp-下载失败
+错误类型: Exception
+错误信息: itle&share_sign=YWkzlyV3x7PfeZTQvFYi13iSioRAyKMMnzgMZpd_IaY-&share_version=708000&ts=1778823672&from_aid=6383&from_ssr=1&share_track_info=%7B%22link_description_type%22%3A%22%22%7D&from=web_code_link
+
+附加信息: 短链: https://v.douyin.com/qYHLx2zDs44/
+Python版本: 3.14.4 (tags/v3.14.4:23116f9, Apr  7 2026, 14:10:54) [MSC v.1944 64 bit (AMD64)]
+平台: win32
+详细追踪:
+NoneType: None
+

@@ -1,0 +1,16 @@
+# 下载的视频（个人内容不上传）
+*.mp4
+
+# 构建产物
+build/
+dist/
+*.spec
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+
+# 系统文件
+Thumbs.db
+desktop.ini
