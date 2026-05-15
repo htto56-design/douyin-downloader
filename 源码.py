@@ -1,20 +1,37 @@
 """
-抖音视频下载器 v4.1
+抖音视频下载器 v4.2
 引擎: Playwright + Direct CDN (+ yt-dlp 备用)
 UI: Apple Design Language (customtkinter)
-新增: 完整异常捕获 · 错误日志 · 自动重试 · 备用引擎
-修复: PyInstaller 打包后 Playwright 浏览器路径问题
+新增: 自定义保存位置 · 记住上次目录
 """
 import customtkinter as ctk
 from tkinter import filedialog, messagebox, Menu
-import threading, os, re, requests, traceback, sys, subprocess, glob
+import threading, os, re, requests, traceback, sys, subprocess, glob, json
 from datetime import datetime
 
-# ★ 关键修复: PyInstaller 打包后 Playwright 找不到浏览器
-# 必须指向系统安装的 ms-playwright 目录
+# Playwright 浏览器路径修复
 _PW_BROWSERS = os.path.join(os.environ.get("LOCALAPPDATA", ""), "ms-playwright")
 if os.path.isdir(_PW_BROWSERS):
     os.environ["PLAYWRIGHT_BROWSERS_PATH"] = _PW_BROWSERS
+
+# 配置文件路径（保存用户偏好）
+_CONFIG_FILE = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0] if getattr(sys, 'frozen', False) else __file__)), "config.json")
+
+def load_config():
+    try:
+        if os.path.exists(_CONFIG_FILE):
+            with open(_CONFIG_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+    except:
+        pass
+    return {}
+
+def save_config(cfg):
+    try:
+        with open(_CONFIG_FILE, "w", encoding="utf-8") as f:
+            json.dump(cfg, f, ensure_ascii=False)
+    except:
+        pass
 
 ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("blue")
@@ -36,7 +53,8 @@ FONT_SMALL = ("Microsoft YaHei UI", 12)
 FONT_MONO = ("Consolas", 11)
 FONT_BUTTON = ("Microsoft YaHei UI", 16, "bold")
 
-SAVE_DIR = os.path.join(os.path.expanduser("~"), "Desktop", "banana")
+_config = load_config()
+SAVE_DIR = _config.get("save_path", os.path.join(os.path.expanduser("~"), "Desktop"))
 os.makedirs(SAVE_DIR, exist_ok=True)
 ERROR_LOG = os.path.join(SAVE_DIR, "error_log.txt")
 
@@ -87,7 +105,7 @@ class Card(ctk.CTkFrame):
 class DouyinDownloader:
     def __init__(self, root):
         self.root = root
-        self.root.title("抖音视频下载器 v4.1")
+        self.root.title("抖音视频下载器 v4.2")
         self.root.geometry("780x750")
         self.root.minsize(620, 600)
         self.root.configure(bg=APPLE_BG, fg_color=APPLE_BG)
@@ -102,9 +120,9 @@ class DouyinDownloader:
         # ── Title ──
         title_row = ctk.CTkFrame(main, fg_color="transparent")
         title_row.pack(fill="x", pady=(0, 5))
-        ctk.CTkLabel(title_row, text="抖音视频下载器 v4.0", font=FONT_TITLE,
+        ctk.CTkLabel(title_row, text="抖音视频下载器 v4.2", font=FONT_TITLE,
                      text_color=APPLE_TEXT).pack(anchor="w")
-        ctk.CTkLabel(title_row, text="粘贴分享文字 · 自动识别 · 异常自诊断",
+        ctk.CTkLabel(title_row, text="粘贴分享文字 · 自动识别 · 自定义保存位置",
                      font=FONT_SMALL, text_color=APPLE_SECONDARY).pack(anchor="w")
         ctk.CTkFrame(main, fg_color=APPLE_SEPARATOR, height=1).pack(fill="x", pady=(15, 18))
 
@@ -264,10 +282,12 @@ class DouyinDownloader:
 
     def browse_folder(self):
         try:
-            folder = filedialog.askdirectory(initialdir=self.download_path)
+            folder = filedialog.askdirectory(initialdir=self.download_path, title="选择视频保存位置")
             if folder:
                 self.download_path = folder
                 self.path_var.set(folder)
+                save_config({"save_path": folder})
+                self.log(f"保存位置已更新: {folder}")
         except Exception as e:
             self.log_error("选择文件夹", e)
 
